@@ -22,6 +22,25 @@ def setup_test_user(i=0):
         raise Exception("Failed to create test user", response.content)
     return user_data
 
+def reset_email(email):
+    url = "http://localhost:8080/api/v1/login/reset/token" 
+    user_data = {
+    "email": email
+    }
+    response_password = requests.post(url, json=user_data)
+    if response_password.status_code != 200:
+        raise Exception("Failed to create test user", response_password.content)
+    response = requests.get('http://localhost:1080/email')
+    if response.status_code != 200:
+        raise Exception("Failed to fetch emails")
+
+    emails = response.json()
+
+    # Find the confirmation email (assuming it's the latest email)
+    confirmation_email = emails[-1]
+
+    confirmation_link = parse_confirmation_link(confirmation_email['html'])
+    return confirmation_link
 
 def confirm_email():
     # Get all emails
@@ -46,6 +65,7 @@ def parse_confirmation_link(raw_email):
 
     return link
 
+
 def teardown_test_user(i=0):
     # Connect to your postgres DB
     conn = psycopg2.connect(
@@ -69,3 +89,4 @@ def teardown_test_user(i=0):
 
     cur.close()
     conn.close()
+
