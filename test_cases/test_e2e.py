@@ -10,6 +10,7 @@ import psycopg2
 
 class TestE2E:
     def test_E2E_account_creation_and_initial_login(self, driver):
+        # Sign up
         driver.get("http://localhost:3000/signup")
         driver.find_element(By.ID, "firstName").send_keys("New")
         driver.find_element(By.ID, "lastName").send_keys("User")
@@ -34,6 +35,23 @@ class TestE2E:
         response_confirmation = requests.get(confirmation_link)
         if response_confirmation.status_code != 200:
             raise Exception("Failed to confirm email")
+        
+        # Check user in DB
+        conn = psycopg2.connect(
+            dbname="connect",
+            user="postgres",
+            password="connect",
+            host="localhost",
+            port="5432"
+        )
+        cur = conn.cursor()
+        cur.execute("SELECT COUNT(*) FROM users WHERE email = 'newuser@example.com';")
+        user_count = cur.fetchone()[0]
+        assert user_count == 1, "User was not created in the database"
+        cur.close()
+        conn.close()
+
+        # Log in
         driver.get("http://localhost:3000/")
         email_field = driver.find_element(By.ID, "email")
         email_field.send_keys('newuser@example.com')
