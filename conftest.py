@@ -15,7 +15,7 @@ def setup_user():
 def driver(request):
     options = FirefoxOptions()
     # Uncomment the next line to run Firefox headlessly
-    # options.add_argument("--headless")
+    #options.add_argument("--headless")
     service = FirefoxService(executable_path=GeckoDriverManager().install())
     driver = webdriver.Firefox(service=service, options=options)
 
