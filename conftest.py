@@ -66,6 +66,10 @@ def remove_activity():
             post_id = cur.fetchone()[0]
             cur.execute("DELETE FROM post WHERE postid = %s;", (post_id,))
             cur.execute("DELETE FROM activities WHERE postid = %s;", (post_id,))
+            # Check in the attachments table if there exist a row that has the postid, if there is, delete it
+            cur.execute("SELECT * FROM attachments WHERE postid = %s;", (post_id,))
+            if cur.rowcount > 0:
+                cur.execute("DELETE FROM attachments WHERE postid = %s;", (post_id,))
             conn.commit()
     except Exception as e:
         raise e

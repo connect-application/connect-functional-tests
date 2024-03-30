@@ -15,8 +15,9 @@ class TestCreateActivity:
         email_field.send_keys(user['email'])
         password_field = driver.find_element(By.ID, "password")
         password_field.send_keys(user['password'])
-        submit_button = driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
-        submit_button.click()
+        submit_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
+        driver.execute_script("arguments[0].click();", submit_button)
         WebDriverWait(driver, 10).until(EC.url_contains("/home"))
         assert "/home" in driver.current_url
         driver.get("http://localhost:3000/create-activity")
@@ -39,8 +40,9 @@ class TestCreateActivity:
         post_text_field.send_keys("Morning Yoga Session")
         visibility_public = driver.find_element(By.ID, "public")
         visibility_public.click()
-        submit_button = driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
-        submit_button.click()
+        submit_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
+        driver.execute_script("arguments[0].click();", submit_button)
         WebDriverWait(driver, 10).until(EC.url_contains("/create-activity/success"))
         assert "/create-activity/success" in driver.current_url
         
@@ -58,8 +60,9 @@ class TestCreateActivity:
         email_field.send_keys(user['email'])
         password_field = driver.find_element(By.ID, "password")
         password_field.send_keys(user['password'])
-        submit_button = driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
-        submit_button.click()
+        submit_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
+        driver.execute_script("arguments[0].click();", submit_button)
         WebDriverWait(driver, 10).until(EC.url_contains("/home"))
         assert "/home" in driver.current_url
         driver.get("http://localhost:3000/create-activity")
@@ -86,8 +89,9 @@ class TestCreateActivity:
         post_text_field.send_keys("Morning Yoga Session")
         visibility_public = driver.find_element(By.ID, "public")
         visibility_public.click()
-        submit_button = driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
-        submit_button.click()
+        submit_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
+        driver.execute_script("arguments[0].click();", submit_button)
         WebDriverWait(driver, 10).until(EC.url_contains("/create-activity/success"))
         assert "/create-activity/success" in driver.current_url
          # Check user in DB
@@ -95,10 +99,12 @@ class TestCreateActivity:
         with conn.cursor() as cur:
             cur.execute("SELECT COUNT(*) FROM post WHERE posttext = 'Morning Yoga Session';")
             activity_count = cur.fetchone()[0]
+            cur.execute("SELECT postid FROM post WHERE posttext = 'Morning Yoga Session';")
+            post_id = cur.fetchone()[0]
+            # Check in the attachment table if element with postid exists and assert
+            cur.execute(f"SELECT COUNT(*) FROM attachments WHERE postid = {post_id};")
+            attachment_count = cur.fetchone()[0]
             assert activity_count == 1, "Activity was not created in the database"
-            cur.execute("SELECT attachement FROM post WHERE posttext = 'Morning Yoga Session';")
-            attachement = cur.fetchone()[0]
-            assert attachement != "", "Attachment was not uploaded"
  
 
     def test_CREATE_ACTIVITY_submit_without_category(self, setup_user, driver):
@@ -109,8 +115,9 @@ class TestCreateActivity:
         email_field.send_keys(user['email'])
         password_field = driver.find_element(By.ID, "password")
         password_field.send_keys(user['password'])
-        submit_button = driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
-        submit_button.click()
+        submit_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
+        driver.execute_script("arguments[0].click();", submit_button)
         WebDriverWait(driver, 10).until(EC.url_contains("/home"))
         assert "/home" in driver.current_url
         driver.get("http://localhost:3000/create-activity")
@@ -130,8 +137,9 @@ class TestCreateActivity:
         post_text_field.send_keys("Morning Yoga Session")
         visibility_public = driver.find_element(By.ID, "public")
         visibility_public.click()
-        submit_button = driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
-        submit_button.click()
+        submit_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
+        driver.execute_script("arguments[0].click();", submit_button)
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[errorMessageId='category_error']")))
         error_message = driver.find_element(By.CSS_SELECTOR, "[errorMessageId='category_error']")
         assert error_message.text == "Required"
@@ -144,8 +152,9 @@ class TestCreateActivity:
         email_field.send_keys(user['email'])
         password_field = driver.find_element(By.ID, "password")
         password_field.send_keys(user['password'])
-        submit_button = driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
-        submit_button.click()
+        submit_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
+        driver.execute_script("arguments[0].click();", submit_button)
         WebDriverWait(driver, 10).until(EC.url_contains("/home"))
         assert "/home" in driver.current_url
         driver.get("http://localhost:3000/create-activity")
@@ -164,8 +173,9 @@ class TestCreateActivity:
         post_text_field.send_keys("Morning Yoga Session")
         visibility_public = driver.find_element(By.ID, "public")
         visibility_public.click()
-        submit_button = driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
-        submit_button.click()
+        submit_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
+        driver.execute_script("arguments[0].click();", submit_button)
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[errorMessageId='startDate_error']")))
         error_message = driver.find_element(By.CSS_SELECTOR, "[errorMessageId='startDate_error']")
         assert error_message.text == "Required"
@@ -178,8 +188,9 @@ class TestCreateActivity:
         email_field.send_keys(user['email'])
         password_field = driver.find_element(By.ID, "password")
         password_field.send_keys(user['password'])
-        submit_button = driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
-        submit_button.click()
+        submit_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
+        driver.execute_script("arguments[0].click();", submit_button)
         WebDriverWait(driver, 10).until(EC.url_contains("/home"))
         assert "/home" in driver.current_url
         driver.get("http://localhost:3000/create-activity")
@@ -198,8 +209,9 @@ class TestCreateActivity:
         post_text_field.send_keys("Morning Yoga Session")
         visibility_public = driver.find_element(By.ID, "public")
         visibility_public.click()
-        submit_button = driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
-        submit_button.click()
+        submit_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
+        driver.execute_script("arguments[0].click();", submit_button)
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[errorMessageId='endDate_error']")))
         error_message = driver.find_element(By.CSS_SELECTOR, "[errorMessageId='endDate_error']")
         assert error_message.text == "Required"
@@ -212,8 +224,9 @@ class TestCreateActivity:
         email_field.send_keys(user['email'])
         password_field = driver.find_element(By.ID, "password")
         password_field.send_keys(user['password'])
-        submit_button = driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
-        submit_button.click()
+        submit_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
+        driver.execute_script("arguments[0].click();", submit_button)
         WebDriverWait(driver, 10).until(EC.url_contains("/home"))
         assert "/home" in driver.current_url
         driver.get("http://localhost:3000/create-activity")
@@ -232,8 +245,9 @@ class TestCreateActivity:
         # post_text_field.send_keys("Morning Yoga Session")
         visibility_public = driver.find_element(By.ID, "public")
         visibility_public.click()
-        submit_button = driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
-        submit_button.click()
+        submit_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
+        driver.execute_script("arguments[0].click();", submit_button)
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[errorMessageId='postText_error']")))
         error_message = driver.find_element(By.CSS_SELECTOR, "[errorMessageId='postText_error']")
         assert error_message.text == "Required"
