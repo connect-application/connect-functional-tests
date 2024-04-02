@@ -3,7 +3,8 @@ from selenium import webdriver
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from webdriver_manager.firefox import GeckoDriverManager
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
-from test_utils import setup_test_user, teardown_test_user, confirm_email, reset_email
+#from test_utils import setup_test_user, teardown_test_user, confirm_email, reset_email
+import test_utils
 import psycopg2
 
 @pytest.fixture(scope="function")
