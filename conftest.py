@@ -105,12 +105,25 @@ def setup_user():
     yield user
     teardown_test_user()
 
+@pytest.fixture(scope="session")
+def driver_setup():
+    """
+    This fixture checks for the GeckoDriver's existence and downloads it if necessary.
+    It then provides the path to the driver.
+    """
+    driver_path = GeckoDriverManager().install()
+    return driver_path
+
 @pytest.fixture(scope="function")
-def driver(request):
+def driver(driver_setup):
+    """
+    Modified driver fixture to use the `driver_setup` fixture.
+    This ensures the driver is downloaded if necessary and initializes the WebDriver.
+    """
     options = FirefoxOptions()
     # Uncomment the next line to run Firefox headlessly
-    #options.add_argument("--headless")
-    service = FirefoxService(executable_path=GeckoDriverManager().install())
+    # options.add_argument("--headless")
+    service = FirefoxService(executable_path=driver_setup)
     driver = webdriver.Firefox(service=service, options=options)
 
     yield driver
