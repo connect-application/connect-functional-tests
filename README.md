@@ -84,7 +84,7 @@ This commands installs all the necessary Python packages, including Selenium, Py
 
 Modify the application.properties file in the backend project, located in connect/src/main/resources/application.properties as follows:
 
-![alt text](image.png "properties modifications")
+![alt text](https://github.com/connect-application/connect-functional-tests/blob/main/test_cases/resources/propertiesChange.png?raw=true "properties modifications")
 
 - Uncomment the lines within the red rectangles.
 - Comment out the line within the blue rectangle.
