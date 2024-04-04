@@ -20,7 +20,23 @@ git clone https://github.com/connect-application/connect-functional-tests.git
 cd connect-functional-tests
 ```
 
-### 2. Create a Virtual Environment
+### 2. Clone the Backend and Frontend Repositories
+
+Clone the backend and frontend code repositories for the application:
+
+- For the backend:
+
+```bash
+git clone https://github.com/connect-application/connect.git
+```
+
+- For the frontend:
+
+```bash
+git clone https://github.com/connect-application/connect-frontend.git
+```
+
+### 3. Create a Virtual Environment
 
 It's recommended to create a virtual environment to manage the project's dependencies separately from your global Python environment:
 
@@ -30,7 +46,7 @@ python3 -m venv testing_env
 
 This command creates a new directory named testing_env that contains the virtual environment.
 
-### 3. Activate the Virtual Environment
+### 4. Activate the Virtual Environment
 
 Activate the virtual environment with the following command:
 
@@ -48,7 +64,7 @@ source testing_env/bin/activate
 
 You should now see the name of your virtual environment (testing_env) in your terminal prompt, indicating that it is active.
 
-### 4. Install Dependencies
+### 5. Install Dependencies
 
 Install the project's dependencies using pip and the provided requirements.txt file:
 
@@ -56,15 +72,49 @@ Install the project's dependencies using pip and the provided requirements.txt f
 pip install -r requirements.txt
 ```
 
-This command installs all the necessary Python packages, including Selenium, Pytest, and WebDriver Manager.
+Additionally, it's necessary to install Maildev for the test environment:
 
-### 5. Running Tests
+```bash
+npm install -g maildev
+```
+
+This commands installs all the necessary Python packages, including Selenium, Pytest, and WebDriver Manager, as well as Maildev for email testing.
+
+### 6. Modify 'application.properties' File
+
+Modify the application.properties file in the backend project, located in connect/src/main/resources/application.properties as follows:
+
+![alt text](image.png "properties modifications")
+
+- Uncomment the lines within the red rectangles.
+- Comment out the line within the blue rectangle.
+- Modify the lines within the orange rectangles as needed.
+
+### 7. Pre-Test Setup
+
+Before executing pytest, ensure the following processes are running:
+
+- The frontend application
+- The backend application
+- Maildev
+
+These processes must be running concurrently for the tests to function correctly.
+
+### 6. Running Tests
 
 To run the tests, use the pytest command from the root directory of the project:
 
 ```bash
 pytest
 ```
+
+To run the tests and generate an HTML report, use the following command:
+
+```bash
+pytest --html=report.html --self-contained-html
+```
+
+This command runs all the test cases and generates a self-contained HTML report named 'report.html'.
 
 ### 6. Deactivating the Virtual Environment
 
@@ -83,7 +133,6 @@ The project's directory structure is as follows:
 ```markdown
 .
 ├── conftest.py
-├── **init**.py
 ├── README.md
 ├── requirements.txt
 ├── test_cases

@@ -8,6 +8,8 @@ from bs4 import BeautifulSoup
 
 class TestSignUp:
     def test_SIGNUP_valid_input_submission(self, driver):
+        # Test if the user can sign up
+        
         driver.get("http://localhost:3000/signup")
         driver.find_element(By.ID, "firstName").send_keys("New")
         driver.find_element(By.ID, "lastName").send_keys("User")
@@ -34,6 +36,8 @@ class TestSignUp:
         assert p_tag is not None, "No p tag found with 'activate your account'"
 
     def test_SIGNUP_invalid_email_format(self, driver):
+        # Test that the user cannot sign up if the email is not in the correct format
+        
         driver.get("http://localhost:3000/signup")
         driver.find_element(By.ID, "firstName").send_keys("Test")
         driver.find_element(By.ID, "lastName").send_keys("User")
@@ -52,6 +56,8 @@ class TestSignUp:
         assert email_error_message.text == "* Invalid email address"
 
     def test_SIGNUP_password_confirmation_mismatch(self, driver):
+        # Test that the user cannot sign up if the passwords do not match
+        
         driver.get("http://localhost:3000/signup")
         driver.find_element(By.ID, "firstName").send_keys("Test")
         driver.find_element(By.ID, "lastName").send_keys("User")
@@ -70,6 +76,8 @@ class TestSignUp:
         assert password_mismatch_error_message.text == "* The passwords do not match"
 
     def test_SIGNUP_duplicate_email_address(self, setup_user, driver):
+        # Test that the user cannot sign up if the email is already registered
+        
         user = setup_user
         driver.get("http://localhost:3000/signup")
         driver.find_element(By.ID, "firstName").send_keys("Test")
@@ -89,6 +97,8 @@ class TestSignUp:
         assert email_duplicate_error_message.text == "Email or username is already registered."
 
     def test_SIGNUP_not_agreeing_terms_privacy_policy(self, driver):
+        # Test that the user cannot sign up if they do not agree to the terms and privacy policy
+        
         driver.get("http://localhost:3000/signup")
         driver.find_element(By.ID, "firstName").send_keys("Test")
         driver.find_element(By.ID, "lastName").send_keys("User")
@@ -104,7 +114,9 @@ class TestSignUp:
         terms_error_message = driver.find_element(By.CSS_SELECTOR, ".error-message[errorMessageId='checkbox_error']")
         assert terms_error_message.text == "* Must accept the terms and privacy policy"
 
-    def test_SIGNUP_to_sign_in(self, driver):
+    def test_SIGNUP_navigate_to_sign_in(self, driver):
+        # Test if the user can navigate to the sign in page
+        
         driver.get("http://localhost:3000/signup")
         signin_link = driver.find_element(By.XPATH, "//p[contains(@class, 'sign-in-link')]/a[contains(text(), 'Sign In')]")
         driver.execute_script("arguments[0].click();", signin_link)
@@ -113,10 +125,11 @@ class TestSignUp:
         assert "Sign In" in driver.title
 
     def test_SIGNUP_username_length_validation(self, driver):
+        # Test that the user cannot sign up if the username is too long
+        
         driver.get("http://localhost:3000/signup")
         driver.find_element(By.ID, "firstName").send_keys("New")
         driver.find_element(By.ID, "lastName").send_keys("User")
-        # Entering a username longer than 12 characters
         driver.find_element(By.ID, "username").send_keys("thisiswaytoolongusername")
         driver.find_element(By.ID, "email").send_keys("user@example.com")
         driver.find_element(By.ID, "password").send_keys("P@ssw0rd1!")
@@ -127,19 +140,18 @@ class TestSignUp:
         submit_button = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
         driver.execute_script("arguments[0].click();", submit_button)
-        # Expecting an error message about the username length
         WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "[errorMessageId='username_error']")))
         username_error_message = driver.find_element(By.CSS_SELECTOR, "[errorMessageId='username_error']")
         assert "* Username cannot exceed 12 characters" in username_error_message.text
 
-
     def test_SIGNUP_length_password_requirement(self, driver):
+        # Test that the user cannot sign up if the password is too short
+
         driver.get("http://localhost:3000/signup")
         driver.find_element(By.ID, "firstName").send_keys("Secure")
         driver.find_element(By.ID, "lastName").send_keys("PasswordTest")
         driver.find_element(By.ID, "username").send_keys("secureuser")
         driver.find_element(By.ID, "email").send_keys("secureuser@example.com")
-        # Entering a password that does not meet security requirements
         driver.find_element(By.ID, "password").send_keys("123")
         driver.find_element(By.ID, "confirmPassword").send_keys("123")
         driver.find_element(By.ID, "dateOfBirth").send_keys("1990-01-01")
@@ -148,12 +160,13 @@ class TestSignUp:
         submit_button = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
         driver.execute_script("arguments[0].click();", submit_button)
-        # Expecting an error message about the password security
         WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "[errorMessageId='password_error']")))
         password_error_message = driver.find_element(By.CSS_SELECTOR, "[errorMessageId='password_error']")
         assert "* Password must have at least 6 characters" in password_error_message.text
     
     def test_SIGNUP_secure_password_requirement(self, driver):
+        # Test that the user cannot sign up if the password is not secure enough
+
         driver.get("http://localhost:3000/signup")
         driver.find_element(By.ID, "firstName").send_keys("Secure")
         driver.find_element(By.ID, "lastName").send_keys("PasswordTest")
@@ -174,6 +187,8 @@ class TestSignUp:
         assert "* Password not secure enough" in password_error_message.text
 
     def test_SIGNUP_date_of_birth_requirement(self, driver):
+        # Test that the user cannot sign up if the date of birth is not entered
+
         driver.get("http://localhost:3000/signup")
         driver.find_element(By.ID, "firstName").send_keys("DateOfBirth")
         driver.find_element(By.ID, "lastName").send_keys("Test")
@@ -192,27 +207,8 @@ class TestSignUp:
         dob_error_message = driver.find_element(By.CSS_SELECTOR, "[errorMessageId='dateOfBirth_error']")
         assert "* Date of birth is required" in dob_error_message.text
 
-
-    def test_SIGNUP_email_format_validation_client_side(self, driver):
-        driver.get("http://localhost:3000/signup")
-        driver.find_element(By.ID, "firstName").send_keys("Email")
-        driver.find_element(By.ID, "lastName").send_keys("Format")
-        driver.find_element(By.ID, "username").send_keys("emailformatuser")
-        driver.find_element(By.ID, "email").send_keys("notanemail")
-        driver.find_element(By.ID, "password").send_keys("P@ssw0rd1!")
-        driver.find_element(By.ID, "confirmPassword").send_keys("P@ssw0rd1!")
-        driver.find_element(By.ID, "dateOfBirth").send_keys("2000-01-01")
-        terms_button = driver.find_element(By.ID, "termsCheck")
-        driver.execute_script("arguments[0].click();", terms_button)
-        submit_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
-        driver.execute_script("arguments[0].click();", submit_button)
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "[errorMessageId='email_error']")))
-        email_error_message = driver.find_element(By.CSS_SELECTOR, "[errorMessageId='email_error']")
-        assert "* Invalid email address" in email_error_message.text
-
-
     # def test_SIGNUP_terms_privacy_policy_link_functionality(self, driver):
+    #     # Test if the terms and privacy policy link is functional
     #     driver.get("http://localhost:3000/signup")
     #     # Note: Adjust the XPath to match the actual structure or add an ID to the terms link for easier selection
     #     terms_link = driver.find_element(By.XPATH, "//a[contains(text(), 'Terms and Privacy Policy')]")

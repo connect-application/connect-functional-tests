@@ -6,6 +6,8 @@ from bs4 import BeautifulSoup
 
 class TestRecoverPassword:
     def test_RESET_PASSWORD_successful_user_authentication(self, reset_password_setup, driver):
+        # Test if the user can reset their password
+
         user, link = reset_password_setup
         driver.get(link)
         driver.find_element(By.ID, "password").send_keys("NEWP@ssw0rd1!")
@@ -17,6 +19,8 @@ class TestRecoverPassword:
         assert "/reset-password-success" in driver.current_url
 
     def test_RESET_PASSWORD_mismatched_passwords(self, reset_password_setup, driver):
+        # Test that the user cannot reset their password if the passwords do not match
+        
         user, link = reset_password_setup
         driver.get(link)
         driver.find_element(By.ID, "password").send_keys("NEWP@ssw0rd1!")
@@ -28,6 +32,8 @@ class TestRecoverPassword:
         assert "* The passwords do not match" in mismatch_error_message
 
     def test_RESET_PASSWORD_no_input(self, reset_password_setup, driver):
+        # Test that the user cannot reset their password if no input is provided
+        
         user, link = reset_password_setup
         driver.get(link)
         submit_button = driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
@@ -37,6 +43,8 @@ class TestRecoverPassword:
         assert "* Password is required" in password_required_message
 
     def test_RESET_PASSWORD_password_too_long(self, reset_password_setup, driver):
+        # Test that the user cannot reset their password if the password is too long
+        
         user, link = reset_password_setup
         driver.get(link)
         long_password = "P@ssw0rd1!" * 5  # Assuming a max length is set
@@ -49,6 +57,8 @@ class TestRecoverPassword:
         assert "* Password cannot exceed 20 characters" in length_error_message
 
     def test_RESET_PASSWORD_password_not_secure_enough(self, reset_password_setup, driver):
+        # Test that the user cannot reset their password if the password is not secure enough
+        
         user, link = reset_password_setup
         driver.get(link)
         insecure_password = "password"  # Example of a weak password

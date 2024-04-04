@@ -22,6 +22,27 @@ def setup_test_user(i=0):
         raise Exception("Failed to create test user", response.content)
     return user_data
 
+def create_group(token, i=0,):
+    group_data = { "groupName": "Group_" + str(i), "categoryId": 1 }
+    url = "http://localhost:8080/group/createGroup?groupName=" + group_data["groupName"] + "&categoryId=" + str(group_data["categoryId"])
+    # Add token as Bearer token
+    headers = {'Authorization': "Bearer {}".format(token)}
+    response = requests.post(url, headers=headers)
+    if response.status_code != 200:
+        raise Exception("Failed to create test group", response.content)
+    return group_data
+
+def sign_in(user):
+    url = "http://localhost:8080/api/v1/login"
+    user_data = {
+        "email": user['email'],
+        "password": user['password']
+    }
+    response = requests.post(url, json=user_data)
+    if response.status_code != 200:
+        raise Exception("Failed to sign in", response.content)
+    return response.json()['jwtToken']
+
 def reset_email(email):
     url = "http://localhost:8080/api/v1/login/reset/token" 
     user_data = {
@@ -90,3 +111,17 @@ def teardown_test_user(i=0):
     cur.close()
     conn.close()
 
+def teardown_test_group(i=0):
+    conn = psycopg2.connect(
+        dbname="connect",
+        user="postgres",
+        password="connect",
+        host="localhost",
+        port="5432"
+    )
+
+    cur = conn.cursor()
+    cur.execute("DELETE FROM connect_groups WHERE groupname = 'Group_" + str(i)+"';")
+    conn.commit()
+    cur.close()
+    conn.close()

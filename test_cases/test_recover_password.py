@@ -1,4 +1,4 @@
-# test_recover_password.py
+# test_RECOVPW.py
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -8,7 +8,9 @@ from bs4 import BeautifulSoup
 
 
 class TestRecoverPassword:
-    def test_RECOVER_PASSWORD_successful_user_authentication(self, setup_user, driver):
+    def test_RECOVPW_successful_user_authentication(self, setup_user, driver):
+        # Test if the user can recover their password
+        
         user = setup_user
         driver.get("http://localhost:3000/recover-password")
         email_field = driver.find_element(By.ID, "email")
@@ -27,7 +29,9 @@ class TestRecoverPassword:
         p_tag = soup.find(lambda tag : tag.name == 'p' and 'reset your password' in tag.text)
         assert p_tag is not None, "No p tag found with 'reset your password'"
 
-    def test_RECOVER_PASSWORD_email_not_registered(self, driver):
+    def test_RECOVPW_email_not_registered(self, driver):
+        # Test that the user cannot recover their password if the email is not registered
+        
         driver.get("http://localhost:3000/recover-password")
         email_field = driver.find_element(By.ID, "email")
         email_field.send_keys("unregistered@example.com")  # Assuming this email is not registered
@@ -37,7 +41,9 @@ class TestRecoverPassword:
         error_message = driver.find_element(By.CSS_SELECTOR, "[errorMessageId='error_message']").text
         assert "Email is not registered." == error_message
 
-    def test_RECOVER_PASSWORD_invalid_email_format(self, driver):
+    def test_RECOVPW_invalid_email_format(self, driver):
+        # Test that the user cannot recover their password if the email is not in the correct format
+        
         driver.get("http://localhost:3000/recover-password")
         email_field = driver.find_element(By.ID, "email")
         email_field.send_keys("invalidemail")  # Invalid email format
@@ -47,7 +53,9 @@ class TestRecoverPassword:
         email_error_message = driver.find_element(By.CSS_SELECTOR, "[errorMessageId='email_error']").text
         assert "* Invalid email address" == email_error_message
 
-    def test_RECOVER_PASSWORD_email_field_required_validation(self, driver):
+    def test_RECOVPW_email_field_required_validation(self, driver):
+        # Test that the user cannot recover their password if the email field is empty
+        
         driver.get("http://localhost:3000/recover-password")
         submit_button = driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
         submit_button.click()

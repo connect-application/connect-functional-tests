@@ -17,6 +17,8 @@ class TestSidebar:
         assert "/home" in driver.current_url
 
     def test_SIDEBAR_search_navigation(self, setup_user, driver):
+        # Test if the user can navigate to the search page
+        
         user = setup_user
         self.sign_in(driver, user)
         search_button = driver.find_element(By.XPATH, "//span[text()='search']")
@@ -25,6 +27,8 @@ class TestSidebar:
         assert "/search" in driver.current_url
     
     def test_SIDEBAR_home_navigation(self, setup_user, driver):
+        # Test if the user can navigate to the home page
+        
         user = setup_user
         self.sign_in(driver, user)
         driver.get("http://localhost:3000/create-activity")
@@ -34,6 +38,8 @@ class TestSidebar:
         assert "/home" in driver.current_url
     
     def test_SIDEBAR_chat_navigation(self, setup_user, driver):
+        # Test if the user can navigate to the chat page
+        
         user = setup_user
         self.sign_in(driver, user)
         search_button = driver.find_element(By.XPATH, "//span[text()='Chat']")
@@ -42,6 +48,8 @@ class TestSidebar:
         assert "/chat" in driver.current_url
  
     def test_SIDEBAR_notifications_navigation(self, setup_user, driver):
+        # Test if the user can navigate to the notifications page
+        
         user = setup_user
         self.sign_in(driver, user)
         search_button = driver.find_element(By.XPATH, "//span[text()='Notifications']")
@@ -50,6 +58,8 @@ class TestSidebar:
         assert "/notifications" in driver.current_url
                 
     def test_SIDEBAR_profile_navigation(self, setup_user, driver):
+        # Test if the user can navigate to the profile page
+        
         user = setup_user
         self.sign_in(driver, user)
         search_button = driver.find_element(By.XPATH, "//span[text()='Profile']")
@@ -58,6 +68,8 @@ class TestSidebar:
         assert "/profile" in driver.current_url
                 
     def test_SIDEBAR_groups_navigation(self, setup_user, driver):
+        # Test if the user can navigate to the groups page
+        
         user = setup_user
         self.sign_in(driver, user)
         search_button = driver.find_element(By.XPATH, "//span[text()='Groups']")
@@ -66,6 +78,8 @@ class TestSidebar:
         assert "/groups" in driver.current_url
         
     def test_SIDEBAR_logout_navigation(self, setup_user, driver):
+        # Test if the user can log out
+        
         user = setup_user
         self.sign_in(driver, user)
         search_button = driver.find_element(By.XPATH, "//span[text()='Logout']")
@@ -74,6 +88,8 @@ class TestSidebar:
         assert "Sign In" in driver.title
     
     def test_SIDEBAR_create_post_navigation(self, setup_user, driver):
+        # Test if the user can navigate to the create post page
+        
         user = setup_user
         self.sign_in(driver, user)
         search_button = driver.find_element(By.XPATH, "//span[text()='create']")
@@ -87,6 +103,8 @@ class TestSidebar:
         assert "/create-post" in driver.current_url
 
     def test_SIDEBAR_create_activity_navigation(self, setup_user, driver):
+        # Test if the user can navigate to the create activity page
+        
         user = setup_user
         self.sign_in(driver, user)
         search_button = driver.find_element(By.XPATH, "//span[text()='create']")

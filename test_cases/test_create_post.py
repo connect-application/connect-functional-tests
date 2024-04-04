@@ -59,8 +59,9 @@ class TestCreatePost:
         conn.commit()
         conn.close()
     
-    def test_CREATE_POST_no_attachement(self, driver, setup_user):
+    def test_CREATEPOST_no_attachement(self, driver, setup_user):
         # Test if the user can create a post without an attachment
+        
         user = setup_user
         self.sign_in(driver, user)
         driver.get("http://localhost:3000/create-post")
@@ -72,8 +73,9 @@ class TestCreatePost:
         assert "/create-post/success" in driver.current_url
         self.remove_post()
 
-    def test_CREATE_POST_with_attachement(self, driver, setup_user):
+    def test_CREATEPOST_with_attachement(self, driver, setup_user):
         # Test if the user can create a post with an attachment
+        
         user = setup_user
         self.sign_in(driver, user)
         driver.get("http://localhost:3000/create-post")
@@ -90,8 +92,9 @@ class TestCreatePost:
         post_id = self.remove_post()
         self.remove_attachment(post_id)
 
-    def test_CREATE_POST_without_caption(self, driver, setup_user):
-        # Test if the user can create a post without a caption
+    def test_CREATEPOST_without_caption(self, driver, setup_user):
+        # Test that the user cannot create a post without a caption
+        
         user = setup_user
         self.sign_in(driver, user)
         driver.get("http://localhost:3000/create-post")
@@ -102,8 +105,9 @@ class TestCreatePost:
             EC.visibility_of_element_located((By.CSS_SELECTOR, "p.error-message")))
         assert error_message.text == "Required"
 
-    def test_CREATE_POST_private(self, driver, setup_user):
+    def test_CREATEPOST_private(self, driver, setup_user):
         # Test if the user can create a private post
+        
         user = setup_user
         self.sign_in(driver, user)
         driver.get("http://localhost:3000/create-post")
@@ -117,7 +121,7 @@ class TestCreatePost:
         assert "/create-post/success" in driver.current_url
         self.remove_post(private=True)
 
-    # def test_CREATE_POST_group(self, driver, setup_user):
+    # def test_CREATEPOST_group(self, driver, setup_user):
     #     # Test if the user can create a post for a group
     #     user = setup_user
     #     self.sign_in(driver, user)

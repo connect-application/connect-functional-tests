@@ -6,6 +6,8 @@ from selenium.webdriver.support import expected_conditions as EC
 
 class TestSignIn:
     def test_SIGNIN_successful_user_authentication(self, setup_user, driver):
+        # Test if the user can sign in
+        
         user = setup_user
         driver.get("http://localhost:3000/")
         email_field = driver.find_element(By.ID, "email")
@@ -18,6 +20,8 @@ class TestSignIn:
         assert "/home" in driver.current_url
     
     def test_SIGNIN_password_mismatch_error(self, setup_user, driver):
+        # Test that the user cannot sign in if the password is incorrect
+        
         user = setup_user
         driver.get("http://localhost:3000/")
         email_field = driver.find_element(By.ID, "email")
@@ -31,6 +35,8 @@ class TestSignIn:
         assert error_message.text == "Invalid username or password."
 
     def test_SIGNIN_required_fields_validation(self, driver):
+        # Test that the user cannot sign in if the required fields are empty
+        
         driver.get("http://localhost:3000/")
         submit_button = driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
         submit_button.click()
@@ -42,6 +48,8 @@ class TestSignIn:
         assert password_error_message.text == "* Password is required"
 
     def test_SIGNIN_invalid_email_format(self, setup_user, driver):
+        # Test that the user cannot sign in if the email is not in the correct format
+        
         user = setup_user
         driver.get("http://localhost:3000/")
         email_field = driver.find_element(By.ID, "email")
@@ -55,6 +63,8 @@ class TestSignIn:
         assert email_error_message.text == "* Invalid email address"
 
     def test_SIGNIN_forgot_password_navigation(self, driver):
+        # Test if the user can navigate to the forgot password page
+        
         driver.get("http://localhost:3000/")
         forgot_password_link = driver.find_element(By.LINK_TEXT, "Forgot Password?")
         forgot_password_link.click()
@@ -62,6 +72,8 @@ class TestSignIn:
         assert "/recover-password" in driver.current_url
 
     def test_SIGNIN_new_account_navigation(self, driver):
+        # Test if the user can navigate to the create new account page
+        
         driver.get("http://localhost:3000/")
         create_account_button = driver.find_element(By.LINK_TEXT, "Create new account")
         create_account_button.click()
@@ -69,6 +81,8 @@ class TestSignIn:
         assert "/signup" in driver.current_url
     
     def test_SIGNIN_incorrect_email_handling(self, driver):
+        # Test that the user cannot sign in if the email is not registered
+        
         driver.get("http://localhost:3000/")
         email_field = driver.find_element(By.ID, "email")
         email_field.send_keys("unregistered@example.com")
@@ -80,7 +94,9 @@ class TestSignIn:
         error_message = driver.find_element(By.CSS_SELECTOR, "[errorMessageId='error_message']")
         assert error_message.text == "Invalid username or password."
     
-    def test_password_visibility_toggle(self, driver):
+    def test_SIGNIN_password_visibility_toggle(self, driver):
+        # Test if the user can toggle the password visibility
+        
         driver.get("http://localhost:3000/")
         password_field = driver.find_element(By.ID, "password")
         password_field.send_keys("test_password")

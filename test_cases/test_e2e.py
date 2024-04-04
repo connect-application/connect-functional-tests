@@ -10,7 +10,8 @@ import psycopg2
 
 class TestE2E:
     def test_E2E_account_creation_and_initial_login(self, driver):
-        # Sign up
+        # Test if the user can create an account and log in
+        
         driver.get("http://localhost:3000/signup")
         driver.find_element(By.ID, "firstName").send_keys("New")
         driver.find_element(By.ID, "lastName").send_keys("User")
@@ -99,6 +100,8 @@ class TestE2E:
             conn.close()
 
     def test_E2E_password_reset_and_access_restriction(self,setup_user, driver):
+        # Test if the user can reset their password and access the site
+        
         user = setup_user
         driver.get("http://localhost:3000/recover-password")
         email_field = driver.find_element(By.ID, "email")

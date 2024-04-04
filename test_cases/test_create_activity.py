@@ -61,8 +61,9 @@ class TestCreateActivity:
         conn.commit()
         conn.close()
 
-    def test_CREATE_ACTIVITY_no_attachement(self, setup_user, driver):
+    def test_CREATEACT_no_attachement(self, setup_user, driver):
         # Test if the user can create an activity without an attachment
+        
         user = setup_user
         self.sign_in(driver, user)
         driver.get("http://localhost:3000/create-activity")
@@ -85,8 +86,9 @@ class TestCreateActivity:
         assert "/create-activity/success" in driver.current_url
         self.remove_post()
         
-    def test_CREATE_ACTIVITY_with_attachment(self, setup_user,driver):
+    def test_CREATEACT_with_attachment(self, setup_user,driver):
         # Test if the user can create an activity with an attachment
+        
         user = setup_user
         self.sign_in(driver, user)
         driver.get("http://localhost:3000/create-activity")
@@ -115,8 +117,9 @@ class TestCreateActivity:
         post_id = self.remove_post()
         self.remove_attachment(post_id)
  
-    def test_CREATE_ACTIVITY_without_category(self, setup_user, driver):
-        # Test if the user can create an activity without a category
+    def test_CREATEACT_without_category(self, setup_user, driver):
+        # Test that the user cannot create an activity without selecting a category
+
         user = setup_user
         self.sign_in(driver, user)
         driver.get("http://localhost:3000/create-activity")
@@ -137,8 +140,9 @@ class TestCreateActivity:
         error_message = driver.find_element(By.CSS_SELECTOR, "[errorMessageId='category_error']")
         assert error_message.text == "Required"
     
-    def test_CREATE_ACTIVITY_without_start_date(self, setup_user, driver):
-        # Test if the user can create an activity without a start date
+    def test_CREATEACT_without_start_date(self, setup_user, driver):
+        # Test that the user cannot create an activity without a start date
+        
         user = setup_user
         self.sign_in(driver, user)
         driver.get("http://localhost:3000/create-activity")
@@ -159,8 +163,9 @@ class TestCreateActivity:
         error_message = driver.find_element(By.CSS_SELECTOR, "[errorMessageId='startDate_error']")
         assert error_message.text == "Required"
     
-    def test_CREATE_ACTIVITY_without_end_date(self, setup_user, driver):
-        # Test if the user can create an activity without an end date
+    def test_CREATEACT_without_end_date(self, setup_user, driver):
+        # Test that the user cannot create an activity without an end date
+        
         user = setup_user
         self.sign_in(driver, user)
         driver.get("http://localhost:3000/create-activity")
@@ -181,8 +186,9 @@ class TestCreateActivity:
         error_message = driver.find_element(By.CSS_SELECTOR, "[errorMessageId='endDate_error']")
         assert error_message.text == "Required"
 
-    def test_CREATE_ACTIVITY_without_post_text(self, setup_user, driver):
-        # Test if the user can create an activity without a post text
+    def test_CREATEACT_without_post_text(self, setup_user, driver):
+        # Test that the user cannot create an activity without a post text
+        
         user = setup_user
         self.sign_in(driver, user)
         driver.get("http://localhost:3000/create-activity")
@@ -203,7 +209,8 @@ class TestCreateActivity:
         error_message = driver.find_element(By.CSS_SELECTOR, "[errorMessageId='postText_error']")
         assert error_message.text == "Required"
     
-    def test_CREATE_ACTIVITY_private(self, setup_user, driver):
+    def test_CREATEACT_private(self, setup_user, driver):
+        # Test if the user can create a private activity
         user = setup_user
         self.sign_in(driver, user)
         driver.get("http://localhost:3000/create-activity")
@@ -226,5 +233,6 @@ class TestCreateActivity:
         assert "/create-activity/success" in driver.current_url
         self.remove_post(private=True)
 
-    # def test_CREATE_ACTIVITY_recurrent(self, setup_user, driver):
+    # def test_CREATEACT_recurrent(self, setup_user, driver):
+    #     # Test if the user can create a recurrent activity
     #     pass
