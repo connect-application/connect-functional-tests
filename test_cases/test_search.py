@@ -18,30 +18,45 @@ class TestSearch:
         WebDriverWait(driver, 10).until(EC.url_contains("/home"))
         assert "/home" in driver.current_url
     
-    def test_SEARCH_user(self, setup_user, driver, setup_user_group):
+    def test_SEARCH_user(self, driver, setup_user_group):
         # Test if the user can search for a user
-        user, sUser, sGroup = setup_user_group
+
+        user, sUser, _ = setup_user_group
         self.sign_in(driver, user)
-        driver.get("http://localhost:3000/search")
+        search_button = driver.find_element(By.XPATH, "//span[text()='search']")
+        search_button.click()
+        WebDriverWait(driver, 10).until(EC.url_contains("/search"))
+        assert "/search" in driver.current_url
         driver.find_element(By.XPATH, "//div[text()='Select Type']").click()
         driver.find_element(By.CSS_SELECTOR, "li[data-value='users']").click()
         search_field = driver.find_element(By.CSS_SELECTOR, "textarea")
         search_field.send_keys(sUser['userName'])
-        submit_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
-        driver.execute_script("arguments[0].click();", submit_button)
-        print()
+        user_item = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, f"//strong[text()='{sUser['userName']}']")))
+        assert user_item
+        user_item.click()
+        WebDriverWait(driver, 10).until(EC.url_contains(f"/profile/{sUser['id']}"))
+        assert f"/profile/{sUser['id']}" in driver.current_url
 
     def test_SEARCH_group(self, setup_user_group, driver):
         # Test if the user can search for a group
-        user, sUser, sGroup = setup_user_group
+
+        user, _, sGroup = setup_user_group
         self.sign_in(driver, user)
-        driver.get("http://localhost:3000/search")
+        search_button = driver.find_element(By.XPATH, "//span[text()='search']")
+        search_button.click()
+        WebDriverWait(driver, 10).until(EC.url_contains("/search"))
+        assert "/search" in driver.current_url
         driver.find_element(By.XPATH, "//div[text()='Select Type']").click()
         driver.find_element(By.CSS_SELECTOR, "li[data-value='groups']").click()
         search_field = driver.find_element(By.CSS_SELECTOR, "textarea")
         search_field.send_keys(sGroup['groupName'])
-        submit_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
-        driver.execute_script("arguments[0].click();", submit_button)
-        print()
+        group_item = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, f"//strong[text()='{sGroup['groupName']}']")))
+        assert group_item
+        group_item.click()
+        #WebDriverWait(driver, 10).until(EC.url_contains(f"/groups/{sGroup['id']}"))
+        #assert f"/groups/{sGroup['id']}" in driver.current_url
+        WebDriverWait(driver, 10).until(EC.url_contains(f"/groups/"))
+        assert "/groups/" in driver.current_url
+ 

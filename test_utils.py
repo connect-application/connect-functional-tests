@@ -41,7 +41,7 @@ def sign_in(user):
     response = requests.post(url, json=user_data)
     if response.status_code != 200:
         raise Exception("Failed to sign in", response.content)
-    return response.json()['jwtToken']
+    return response.json()['jwtToken'], response.json()['id']
 
 def reset_email(email):
     url = "http://localhost:8080/api/v1/login/reset/token" 
