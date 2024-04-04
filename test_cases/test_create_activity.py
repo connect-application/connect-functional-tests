@@ -19,11 +19,53 @@ class TestCreateActivity:
         WebDriverWait(driver, 10).until(EC.url_contains("/home"))
         assert "/home" in driver.current_url
 
-    def test_CREATE_ACTIVITY_create_activity_no_attachement(self, setup_user, remove_activity, driver):
+    def remove_post(self, private=False):
+        conn = psycopg2.connect(
+            dbname="connect",
+            user="postgres",
+            password="connect",
+            host="localhost",
+            port="5432"
+        )
+        cur = conn.cursor()
+        cur.execute("SELECT COUNT(*) FROM post WHERE posttext='Morning Yoga Session'")
+        activity_count = cur.fetchone()[0]
+        assert activity_count == 1
+        if private:
+            # assert that the post is private in the 'ispublic' column from the post table
+            cur.execute("SELECT ispublic FROM post WHERE posttext='Morning Yoga Session'")
+            is_public = cur.fetchone()[0]
+            assert not is_public
+
+        cur.execute("SELECT postid FROM post WHERE posttext='Morning Yoga Session'")
+        post_id = cur.fetchone()[0]
+        cur.execute("DELETE FROM post WHERE postid = %s;", (post_id,))
+        cur.execute("DELETE FROM activities WHERE postid = %s;", (post_id,))
+        conn.commit()
+        conn.close()
+        return post_id
+
+    def remove_attachment(self, post_id):
+        conn = psycopg2.connect(
+            dbname="connect",
+            user="postgres",
+            password="connect",
+            host="localhost",
+            port="5432"
+        )
+        cur = conn.cursor()
+        cur.execute("SELECT COUNT(*) FROM attachments WHERE postid=%s", (post_id,))
+        attachment_count = cur.fetchone()[0]
+        assert attachment_count == 1
+        cur.execute("DELETE FROM attachments WHERE postid=%s", (post_id,))
+        conn.commit()
+        conn.close()
+
+    def test_CREATE_ACTIVITY_no_attachement(self, setup_user, driver):
+        # Test if the user can create an activity without an attachment
         user = setup_user
         self.sign_in(driver, user)
         driver.get("http://localhost:3000/create-activity")
-        # Create activity
         category_select = driver.find_element(By.ID, "category")
         category_select.click()
         fitness_option = driver.find_element(By.XPATH, "//div[text()='Fitness']")
@@ -31,11 +73,7 @@ class TestCreateActivity:
         start_date_field = driver.find_element(By.ID, "startDate")
         start_date_field.send_keys("2023-01-01")
         end_date_field = driver.find_element(By.ID, "endDate")
-        end_date_field.send_keys("2023-01-02")
-        start_time_field = driver.find_element(By.ID, "startTime")
-        start_time_field.send_keys("09:00")
-        end_time_field = driver.find_element(By.ID, "endTime")
-        end_time_field.send_keys("17:00")
+        end_date_field.send_keys("2023-01-01")
         post_text_field = driver.find_element(By.ID, "postText")
         post_text_field.send_keys("Morning Yoga Session")
         visibility_public = driver.find_element(By.ID, "public")
@@ -45,18 +83,13 @@ class TestCreateActivity:
         driver.execute_script("arguments[0].click();", submit_button)
         WebDriverWait(driver, 10).until(EC.url_contains("/create-activity/success"))
         assert "/create-activity/success" in driver.current_url
+        self.remove_post()
         
-        # Check user in DB
-        with remove_activity.cursor() as cur:
-            cur.execute("SELECT COUNT(*) FROM post WHERE posttext = 'Morning Yoga Session';")
-            activity_count = cur.fetchone()[0]
-            assert activity_count == 1, "Activity was not created in the database"
-            
-    def test_CREATE_ACTIVITY_create_activity_with_attachment(self, setup_user, remove_activity, driver):
+    def test_CREATE_ACTIVITY_with_attachment(self, setup_user,driver):
+        # Test if the user can create an activity with an attachment
         user = setup_user
         self.sign_in(driver, user)
         driver.get("http://localhost:3000/create-activity")
-        # Create activity
         file_input_ref = driver.find_element(By.CSS_SELECTOR, "input[type='file']")
         current_dir = os.path.dirname(os.path.abspath(__file__))
         file_path = os.path.join(current_dir, 'resources', 'meditate.jpg')
@@ -68,11 +101,8 @@ class TestCreateActivity:
         start_date_field = driver.find_element(By.ID, "startDate")
         start_date_field.send_keys("2023-01-01")
         end_date_field = driver.find_element(By.ID, "endDate")
-        end_date_field.send_keys("2023-01-02")
-        start_time_field = driver.find_element(By.ID, "startTime")
-        start_time_field.send_keys("09:00")
-        end_time_field = driver.find_element(By.ID, "endTime")
-        end_time_field.send_keys("17:00")
+        end_date_field.send_keys("2023-01-01")
+
         post_text_field = driver.find_element(By.ID, "postText")
         post_text_field.send_keys("Morning Yoga Session")
         visibility_public = driver.find_element(By.ID, "public")
@@ -82,33 +112,20 @@ class TestCreateActivity:
         driver.execute_script("arguments[0].click();", submit_button)
         WebDriverWait(driver, 10).until(EC.url_contains("/create-activity/success"))
         assert "/create-activity/success" in driver.current_url
-         # Check user in DB
-        conn = remove_activity
-        with conn.cursor() as cur:
-            cur.execute("SELECT COUNT(*) FROM post WHERE posttext = 'Morning Yoga Session';")
-            activity_count = cur.fetchone()[0]
-            cur.execute("SELECT postid FROM post WHERE posttext = 'Morning Yoga Session';")
-            post_id = cur.fetchone()[0]
-            # Check in the attachment table if element with postid exists and assert
-            cur.execute(f"SELECT COUNT(*) FROM attachments WHERE postid = {post_id};")
-            attachment_count = cur.fetchone()[0]
-            assert activity_count == 1, "Activity was not created in the database"
+        post_id = self.remove_post()
+        self.remove_attachment(post_id)
  
-
-    def test_CREATE_ACTIVITY_submit_without_category(self, setup_user, driver):
+    def test_CREATE_ACTIVITY_without_category(self, setup_user, driver):
+        # Test if the user can create an activity without a category
         user = setup_user
         self.sign_in(driver, user)
         driver.get("http://localhost:3000/create-activity")
         
-        # Create activity
         start_date_field = driver.find_element(By.ID, "startDate")
         start_date_field.send_keys("2023-01-01")
         end_date_field = driver.find_element(By.ID, "endDate")
-        end_date_field.send_keys("2023-01-02")
-        start_time_field = driver.find_element(By.ID, "startTime")
-        start_time_field.send_keys("09:00")
-        end_time_field = driver.find_element(By.ID, "endTime")
-        end_time_field.send_keys("17:00")
+        end_date_field.send_keys("2023-01-01")
+
         post_text_field = driver.find_element(By.ID, "postText")
         post_text_field.send_keys("Morning Yoga Session")
         visibility_public = driver.find_element(By.ID, "public")
@@ -120,17 +137,17 @@ class TestCreateActivity:
         error_message = driver.find_element(By.CSS_SELECTOR, "[errorMessageId='category_error']")
         assert error_message.text == "Required"
     
-    def test_CREATE_ACTIVITY_submit_without_start_date(self, setup_user, driver):
+    def test_CREATE_ACTIVITY_without_start_date(self, setup_user, driver):
+        # Test if the user can create an activity without a start date
         user = setup_user
         self.sign_in(driver, user)
         driver.get("http://localhost:3000/create-activity")
-        # Create activity
         category_select = driver.find_element(By.ID, "category")
         category_select.click()
         fitness_option = driver.find_element(By.XPATH, "//div[text()='Fitness']")
         fitness_option.click()
         end_date_field = driver.find_element(By.ID, "endDate")
-        end_date_field.send_keys("2023-01-02")
+        end_date_field.send_keys("2023-01-01")
         post_text_field = driver.find_element(By.ID, "postText")
         post_text_field.send_keys("Morning Yoga Session")
         visibility_public = driver.find_element(By.ID, "public")
@@ -142,11 +159,11 @@ class TestCreateActivity:
         error_message = driver.find_element(By.CSS_SELECTOR, "[errorMessageId='startDate_error']")
         assert error_message.text == "Required"
     
-    def test_CREATE_ACTIVITY_submit_without_end_date(self, setup_user, driver):
+    def test_CREATE_ACTIVITY_without_end_date(self, setup_user, driver):
+        # Test if the user can create an activity without an end date
         user = setup_user
         self.sign_in(driver, user)
         driver.get("http://localhost:3000/create-activity")
-        # Create activity
         category_select = driver.find_element(By.ID, "category")
         category_select.click()
         fitness_option = driver.find_element(By.XPATH, "//div[text()='Fitness']")
@@ -164,11 +181,11 @@ class TestCreateActivity:
         error_message = driver.find_element(By.CSS_SELECTOR, "[errorMessageId='endDate_error']")
         assert error_message.text == "Required"
 
-    def test_CREATE_ACTIVITY_submit_without_post_text(self, setup_user, driver):
+    def test_CREATE_ACTIVITY_without_post_text(self, setup_user, driver):
+        # Test if the user can create an activity without a post text
         user = setup_user
         self.sign_in(driver, user)
         driver.get("http://localhost:3000/create-activity")
-        # Create activity
         category_select = driver.find_element(By.ID, "category")
         category_select.click()
         fitness_option = driver.find_element(By.XPATH, "//div[text()='Fitness']")
@@ -176,8 +193,7 @@ class TestCreateActivity:
         start_date_field = driver.find_element(By.ID, "startDate")
         start_date_field.send_keys("2023-01-01")
         end_date_field = driver.find_element(By.ID, "endDate")
-        end_date_field.send_keys("2023-01-02")
-
+        end_date_field.send_keys("2023-01-01")
         visibility_public = driver.find_element(By.ID, "public")
         driver.execute_script("arguments[0].click();", visibility_public)
         submit_button = WebDriverWait(driver, 10).until(
@@ -186,6 +202,29 @@ class TestCreateActivity:
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[errorMessageId='postText_error']")))
         error_message = driver.find_element(By.CSS_SELECTOR, "[errorMessageId='postText_error']")
         assert error_message.text == "Required"
+    
+    def test_CREATE_ACTIVITY_private(self, setup_user, driver):
+        user = setup_user
+        self.sign_in(driver, user)
+        driver.get("http://localhost:3000/create-activity")
+        category_select = driver.find_element(By.ID, "category")
+        category_select.click()
+        fitness_option = driver.find_element(By.XPATH, "//div[text()='Fitness']")
+        fitness_option.click()
+        start_date_field = driver.find_element(By.ID, "startDate")
+        start_date_field.send_keys("2023-01-01")
+        end_date_field = driver.find_element(By.ID, "endDate")
+        end_date_field.send_keys("2023-01-01")
+        post_text_field = driver.find_element(By.ID, "postText")
+        post_text_field.send_keys("Morning Yoga Session")
+        visibility_public = driver.find_element(By.ID, "private")
+        driver.execute_script("arguments[0].click();", visibility_public)
+        submit_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
+        driver.execute_script("arguments[0].click();", submit_button)
+        WebDriverWait(driver, 10).until(EC.url_contains("/create-activity/success"))
+        assert "/create-activity/success" in driver.current_url
+        self.remove_post(private=True)
 
-    # def test_CREATE_ACTIVITY_recurring(self, setup_user, driver):
+    # def test_CREATE_ACTIVITY_recurrent(self, setup_user, driver):
     #     pass
