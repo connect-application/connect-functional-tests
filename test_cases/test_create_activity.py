@@ -7,19 +7,21 @@ import os
 
 
 class TestCreateActivity:
-    def test_CREATE_ACTIVITY_create_activity_no_attachement(self, setup_user, remove_activity, driver):
-        user = setup_user
+    def sign_in(self, driver, user):
         # Sign in
         driver.get("http://localhost:3000/")
         email_field = driver.find_element(By.ID, "email")
         email_field.send_keys(user['email'])
         password_field = driver.find_element(By.ID, "password")
         password_field.send_keys(user['password'])
-        submit_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
-        driver.execute_script("arguments[0].click();", submit_button)
+        submit_button = driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
+        submit_button.click()
         WebDriverWait(driver, 10).until(EC.url_contains("/home"))
         assert "/home" in driver.current_url
+
+    def test_CREATE_ACTIVITY_create_activity_no_attachement(self, setup_user, remove_activity, driver):
+        user = setup_user
+        self.sign_in(driver, user)
         driver.get("http://localhost:3000/create-activity")
         # Create activity
         category_select = driver.find_element(By.ID, "category")
@@ -34,12 +36,10 @@ class TestCreateActivity:
         start_time_field.send_keys("09:00")
         end_time_field = driver.find_element(By.ID, "endTime")
         end_time_field.send_keys("17:00")
-        is_recurring_checkbox = driver.find_element(By.ID, "isRecurring")
-        is_recurring_checkbox.click()
         post_text_field = driver.find_element(By.ID, "postText")
         post_text_field.send_keys("Morning Yoga Session")
         visibility_public = driver.find_element(By.ID, "public")
-        visibility_public.click()
+        driver.execute_script("arguments[0].click();", visibility_public)
         submit_button = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
         driver.execute_script("arguments[0].click();", submit_button)
@@ -54,17 +54,7 @@ class TestCreateActivity:
             
     def test_CREATE_ACTIVITY_create_activity_with_attachment(self, setup_user, remove_activity, driver):
         user = setup_user
-        # Sign in
-        driver.get("http://localhost:3000/")
-        email_field = driver.find_element(By.ID, "email")
-        email_field.send_keys(user['email'])
-        password_field = driver.find_element(By.ID, "password")
-        password_field.send_keys(user['password'])
-        submit_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
-        driver.execute_script("arguments[0].click();", submit_button)
-        WebDriverWait(driver, 10).until(EC.url_contains("/home"))
-        assert "/home" in driver.current_url
+        self.sign_in(driver, user)
         driver.get("http://localhost:3000/create-activity")
         # Create activity
         file_input_ref = driver.find_element(By.CSS_SELECTOR, "input[type='file']")
@@ -83,12 +73,10 @@ class TestCreateActivity:
         start_time_field.send_keys("09:00")
         end_time_field = driver.find_element(By.ID, "endTime")
         end_time_field.send_keys("17:00")
-        is_recurring_checkbox = driver.find_element(By.ID, "isRecurring")
-        is_recurring_checkbox.click()
         post_text_field = driver.find_element(By.ID, "postText")
         post_text_field.send_keys("Morning Yoga Session")
         visibility_public = driver.find_element(By.ID, "public")
-        visibility_public.click()
+        driver.execute_script("arguments[0].click();", visibility_public)
         submit_button = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
         driver.execute_script("arguments[0].click();", submit_button)
@@ -109,17 +97,7 @@ class TestCreateActivity:
 
     def test_CREATE_ACTIVITY_submit_without_category(self, setup_user, driver):
         user = setup_user
-        # Sign in
-        driver.get("http://localhost:3000/")
-        email_field = driver.find_element(By.ID, "email")
-        email_field.send_keys(user['email'])
-        password_field = driver.find_element(By.ID, "password")
-        password_field.send_keys(user['password'])
-        submit_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
-        driver.execute_script("arguments[0].click();", submit_button)
-        WebDriverWait(driver, 10).until(EC.url_contains("/home"))
-        assert "/home" in driver.current_url
+        self.sign_in(driver, user)
         driver.get("http://localhost:3000/create-activity")
         
         # Create activity
@@ -131,12 +109,10 @@ class TestCreateActivity:
         start_time_field.send_keys("09:00")
         end_time_field = driver.find_element(By.ID, "endTime")
         end_time_field.send_keys("17:00")
-        is_recurring_checkbox = driver.find_element(By.ID, "isRecurring")
-        is_recurring_checkbox.click()
         post_text_field = driver.find_element(By.ID, "postText")
         post_text_field.send_keys("Morning Yoga Session")
         visibility_public = driver.find_element(By.ID, "public")
-        visibility_public.click()
+        driver.execute_script("arguments[0].click();", visibility_public)
         submit_button = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
         driver.execute_script("arguments[0].click();", submit_button)
@@ -146,33 +122,19 @@ class TestCreateActivity:
     
     def test_CREATE_ACTIVITY_submit_without_start_date(self, setup_user, driver):
         user = setup_user
-        # Sign in
-        driver.get("http://localhost:3000/")
-        email_field = driver.find_element(By.ID, "email")
-        email_field.send_keys(user['email'])
-        password_field = driver.find_element(By.ID, "password")
-        password_field.send_keys(user['password'])
-        submit_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
-        driver.execute_script("arguments[0].click();", submit_button)
-        WebDriverWait(driver, 10).until(EC.url_contains("/home"))
-        assert "/home" in driver.current_url
+        self.sign_in(driver, user)
         driver.get("http://localhost:3000/create-activity")
         # Create activity
         category_select = driver.find_element(By.ID, "category")
         category_select.click()
         fitness_option = driver.find_element(By.XPATH, "//div[text()='Fitness']")
         fitness_option.click()
-        # start_date_field = driver.find_element(By.ID, "startDate")
-        # start_date_field.send_keys("2023-01-01")
         end_date_field = driver.find_element(By.ID, "endDate")
         end_date_field.send_keys("2023-01-02")
-        is_recurring_checkbox = driver.find_element(By.ID, "isRecurring")
-        is_recurring_checkbox.click()
         post_text_field = driver.find_element(By.ID, "postText")
         post_text_field.send_keys("Morning Yoga Session")
         visibility_public = driver.find_element(By.ID, "public")
-        visibility_public.click()
+        driver.execute_script("arguments[0].click();", visibility_public)
         submit_button = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
         driver.execute_script("arguments[0].click();", submit_button)
@@ -182,17 +144,7 @@ class TestCreateActivity:
     
     def test_CREATE_ACTIVITY_submit_without_end_date(self, setup_user, driver):
         user = setup_user
-        # Sign in
-        driver.get("http://localhost:3000/")
-        email_field = driver.find_element(By.ID, "email")
-        email_field.send_keys(user['email'])
-        password_field = driver.find_element(By.ID, "password")
-        password_field.send_keys(user['password'])
-        submit_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
-        driver.execute_script("arguments[0].click();", submit_button)
-        WebDriverWait(driver, 10).until(EC.url_contains("/home"))
-        assert "/home" in driver.current_url
+        self.sign_in(driver, user)
         driver.get("http://localhost:3000/create-activity")
         # Create activity
         category_select = driver.find_element(By.ID, "category")
@@ -201,14 +153,10 @@ class TestCreateActivity:
         fitness_option.click()
         start_date_field = driver.find_element(By.ID, "startDate")
         start_date_field.send_keys("2023-01-01")
-        # end_date_field = driver.find_element(By.ID, "endDate")
-        # end_date_field.send_keys("2023-01-02")
-        is_recurring_checkbox = driver.find_element(By.ID, "isRecurring")
-        is_recurring_checkbox.click()
         post_text_field = driver.find_element(By.ID, "postText")
         post_text_field.send_keys("Morning Yoga Session")
         visibility_public = driver.find_element(By.ID, "public")
-        visibility_public.click()
+        driver.execute_script("arguments[0].click();", visibility_public)
         submit_button = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
         driver.execute_script("arguments[0].click();", submit_button)
@@ -218,17 +166,7 @@ class TestCreateActivity:
 
     def test_CREATE_ACTIVITY_submit_without_post_text(self, setup_user, driver):
         user = setup_user
-        # Sign in
-        driver.get("http://localhost:3000/")
-        email_field = driver.find_element(By.ID, "email")
-        email_field.send_keys(user['email'])
-        password_field = driver.find_element(By.ID, "password")
-        password_field.send_keys(user['password'])
-        submit_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
-        driver.execute_script("arguments[0].click();", submit_button)
-        WebDriverWait(driver, 10).until(EC.url_contains("/home"))
-        assert "/home" in driver.current_url
+        self.sign_in(driver, user)
         driver.get("http://localhost:3000/create-activity")
         # Create activity
         category_select = driver.find_element(By.ID, "category")
@@ -239,15 +177,15 @@ class TestCreateActivity:
         start_date_field.send_keys("2023-01-01")
         end_date_field = driver.find_element(By.ID, "endDate")
         end_date_field.send_keys("2023-01-02")
-        is_recurring_checkbox = driver.find_element(By.ID, "isRecurring")
-        is_recurring_checkbox.click()
-        # post_text_field = driver.find_element(By.ID, "postText")
-        # post_text_field.send_keys("Morning Yoga Session")
+
         visibility_public = driver.find_element(By.ID, "public")
-        visibility_public.click()
+        driver.execute_script("arguments[0].click();", visibility_public)
         submit_button = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
         driver.execute_script("arguments[0].click();", submit_button)
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[errorMessageId='postText_error']")))
         error_message = driver.find_element(By.CSS_SELECTOR, "[errorMessageId='postText_error']")
         assert error_message.text == "Required"
+
+    # def test_CREATE_ACTIVITY_recurring(self, setup_user, driver):
+    #     pass
