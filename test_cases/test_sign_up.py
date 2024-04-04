@@ -16,7 +16,8 @@ class TestSignUp:
         driver.find_element(By.ID, "password").send_keys("P@ssw0rd1!")
         driver.find_element(By.ID, "confirmPassword").send_keys("P@ssw0rd1!")
         driver.find_element(By.ID, "dateOfBirth").send_keys("2000-01-01")
-        driver.find_element(By.ID, "termsCheck").click()
+        terms_button = driver.find_element(By.ID, "termsCheck")
+        driver.execute_script("arguments[0].click();", terms_button)
         submit_button = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
         driver.execute_script("arguments[0].click();", submit_button)
@@ -41,7 +42,8 @@ class TestSignUp:
         driver.find_element(By.ID, "password").send_keys("P@ssw0rd1!")
         driver.find_element(By.ID, "confirmPassword").send_keys("P@ssw0rd1!")
         driver.find_element(By.ID, "dateOfBirth").send_keys("2000-01-01")
-        driver.find_element(By.ID, "termsCheck").click()
+        terms_button = driver.find_element(By.ID, "termsCheck")
+        driver.execute_script("arguments[0].click();", terms_button)
         submit_button = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
         driver.execute_script("arguments[0].click();", submit_button)
@@ -58,7 +60,8 @@ class TestSignUp:
         driver.find_element(By.ID, "password").send_keys("P@ssw0rd1!")
         driver.find_element(By.ID, "confirmPassword").send_keys("Password2!")
         driver.find_element(By.ID, "dateOfBirth").send_keys("2000-01-01")
-        driver.find_element(By.ID, "termsCheck").click()
+        terms_button = driver.find_element(By.ID, "termsCheck")
+        driver.execute_script("arguments[0].click();", terms_button)
         submit_button = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
         driver.execute_script("arguments[0].click();", submit_button)
@@ -76,7 +79,8 @@ class TestSignUp:
         driver.find_element(By.ID, "password").send_keys("P@ssw0rd1!")
         driver.find_element(By.ID, "confirmPassword").send_keys("P@ssw0rd1!")
         driver.find_element(By.ID, "dateOfBirth").send_keys("2000-01-01")
-        driver.find_element(By.ID, "termsCheck").click()
+        terms_button = driver.find_element(By.ID, "termsCheck")
+        driver.execute_script("arguments[0].click();", terms_button)
         submit_button = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
         driver.execute_script("arguments[0].click();", submit_button)
@@ -118,7 +122,8 @@ class TestSignUp:
         driver.find_element(By.ID, "password").send_keys("P@ssw0rd1!")
         driver.find_element(By.ID, "confirmPassword").send_keys("P@ssw0rd1!")
         driver.find_element(By.ID, "dateOfBirth").send_keys("2000-01-01")
-        driver.find_element(By.ID, "termsCheck").click()
+        terms_button = driver.find_element(By.ID, "termsCheck")
+        driver.execute_script("arguments[0].click();", terms_button)
         submit_button = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
         driver.execute_script("arguments[0].click();", submit_button)
@@ -138,7 +143,8 @@ class TestSignUp:
         driver.find_element(By.ID, "password").send_keys("123")
         driver.find_element(By.ID, "confirmPassword").send_keys("123")
         driver.find_element(By.ID, "dateOfBirth").send_keys("1990-01-01")
-        driver.find_element(By.ID, "termsCheck").click()
+        terms_button = driver.find_element(By.ID, "termsCheck")
+        driver.execute_script("arguments[0].click();", terms_button)
         submit_button = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
         driver.execute_script("arguments[0].click();", submit_button)
@@ -157,7 +163,8 @@ class TestSignUp:
         driver.find_element(By.ID, "password").send_keys("p@ssword1234")
         driver.find_element(By.ID, "confirmPassword").send_keys("p@ssword1234")
         driver.find_element(By.ID, "dateOfBirth").send_keys("1990-01-01")
-        driver.find_element(By.ID, "termsCheck").click()
+        terms_button = driver.find_element(By.ID, "termsCheck")
+        driver.execute_script("arguments[0].click();", terms_button)
         submit_button = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
         driver.execute_script("arguments[0].click();", submit_button)
@@ -175,7 +182,8 @@ class TestSignUp:
         driver.find_element(By.ID, "password").send_keys("P@ssw0rd1!")
         driver.find_element(By.ID, "confirmPassword").send_keys("P@ssw0rd1!")
         # Not entering a date of birth
-        driver.find_element(By.ID, "termsCheck").click()
+        terms_button = driver.find_element(By.ID, "termsCheck")
+        driver.execute_script("arguments[0].click();", terms_button)
         submit_button = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
         driver.execute_script("arguments[0].click();", submit_button)
@@ -194,7 +202,8 @@ class TestSignUp:
         driver.find_element(By.ID, "password").send_keys("P@ssw0rd1!")
         driver.find_element(By.ID, "confirmPassword").send_keys("P@ssw0rd1!")
         driver.find_element(By.ID, "dateOfBirth").send_keys("2000-01-01")
-        driver.find_element(By.ID, "termsCheck").click()
+        terms_button = driver.find_element(By.ID, "termsCheck")
+        driver.execute_script("arguments[0].click();", terms_button)
         submit_button = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
         driver.execute_script("arguments[0].click();", submit_button)
