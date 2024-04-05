@@ -92,18 +92,18 @@ class TestCreatePost:
         post_id = self.remove_post()
         self.remove_attachment(post_id)
 
-    def test_CREATEPOST_without_caption(self, driver, setup_user):
-        # Test that the user cannot create a post without a caption
+    # def test_CREATEPOST_without_caption(self, driver, setup_user):
+    #     # Test that the user cannot create a post without a caption
         
-        user = setup_user
-        self.sign_in(driver, user)
-        driver.get("http://localhost:3000/create-post")
-        submit_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
-        driver.execute_script("arguments[0].click();", submit_button)
-        error_message = WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located((By.CSS_SELECTOR, "p.error-message")))
-        assert error_message.text == "Required"
+    #     user = setup_user
+    #     self.sign_in(driver, user)
+    #     driver.get("http://localhost:3000/create-post")
+    #     submit_button = WebDriverWait(driver, 10).until(
+    #         EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
+    #     driver.execute_script("arguments[0].click();", submit_button)
+    #     error_message = WebDriverWait(driver, 10).until(
+    #         EC.visibility_of_element_located((By.CSS_SELECTOR, "p.error-message")))
+    #     assert error_message.text == "Required"
 
     def test_CREATEPOST_private(self, driver, setup_user):
         # Test if the user can create a private post

@@ -6,6 +6,20 @@ import psycopg2
 from bs4 import BeautifulSoup
 
 
+def follow_user(user, user_to_follow):
+    url = "http://localhost:8080/follow/toggleFollow?toFollow=" + str(user_to_follow['id'])
+    headers = {'Authorization': "Bearer {}".format(user['token'])}
+    response = requests.post(url, headers=headers)
+    if response.status_code != 200:
+        raise Exception("Failed to create test group", response.content)
+
+def set_about(user, about):
+    # To this url http://localhost:8080/user/editAbout?about=Hola Mundoaaa
+    url = "http://localhost:8080/user/editAbout?about=" + about
+    headers = {'Authorization': "Bearer {}".format(user['token'])}
+    response = requests.post(url, headers=headers)
+    if response.status_code != 200:
+        raise Exception("Failed to create test group", response.content)
 
 def setup_test_user(i=0):
     url = "http://localhost:8080/api/v1/signup" 

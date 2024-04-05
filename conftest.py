@@ -6,15 +6,46 @@ from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options as ChromeOptions
-from test_utils import sign_in, teardown_test_group, create_group, setup_test_user, teardown_test_user, confirm_email, reset_email
+from test_utils import follow_user, set_about, sign_in, teardown_test_group, create_group, setup_test_user, teardown_test_user, confirm_email, reset_email
 import psycopg2
 
 @pytest.fixture(scope="function")
 def setup_user():
     user = setup_test_user()
     confirm_email()
+    _, id_user = sign_in(user)
+    user['id'] = id_user
     yield user
     teardown_test_user()
+
+@pytest.fixture(scope="function")
+def setup_users_profile():
+    user_0 = setup_test_user(0)
+    confirm_email()
+    user_1 = setup_test_user(1)
+    confirm_email()
+    user_2 = setup_test_user(2)
+    confirm_email()
+    user_3 = setup_test_user(3)
+    confirm_email()
+
+    user_0['token'], user_0['id'] = sign_in(user_0)
+    user_1['token'], user_1['id'] = sign_in(user_1)
+    user_2['token'], user_2['id'] = sign_in(user_2)
+    user_3['token'], user_3['id'] = sign_in(user_3)
+
+    set_about(user_0, "Example about 0")
+    follow_user(user_0, user_1)
+    follow_user(user_0, user_2)
+    follow_user(user_1, user_0)
+    follow_user(user_3, user_0)
+
+
+    yield user_0, user_1, user_2, user_3
+    teardown_test_user(0)
+    teardown_test_user(1)
+    teardown_test_user(2)
+    teardown_test_user(3)
 
 @pytest.fixture(scope="function")
 def setup_user_group(setup_user):
@@ -32,19 +63,11 @@ def setup_user_group(setup_user):
 
 @pytest.fixture(scope="session")
 def driver_setup():
-    """
-    This fixture checks for the GeckoDriver's existence and downloads it if necessary.
-    It then provides the path to the driver.
-    """
     driver_path = GeckoDriverManager().install()
     return driver_path
 
 @pytest.fixture(scope="function")
 def driver(driver_setup):
-    """
-    Modified driver fixture to use the `driver_setup` fixture.
-    This ensures the driver is downloaded if necessary and initializes the WebDriver.
-    """
     options = FirefoxOptions()
     # Uncomment the next line to run Firefox headlessly
     # options.add_argument("--headless")
@@ -74,22 +97,12 @@ def db_connection():
 
 @pytest.fixture(scope="session")
 def driver_setup_chrome():
-    """
-    This fixture checks for the ChromeDriver's existence and downloads it if necessary.
-    It then provides the path to the driver.
-    """
     driver_path = ChromeDriverManager().install()
     return driver_path
 
 @pytest.fixture(scope="function")
 def driver_chrome(driver_setup_chrome):
-    """
-    Modified driver fixture to use the `driver_setup_chrome` fixture.
-    This ensures the driver is downloaded if necessary and initializes the WebDriver.
-    """
     options = ChromeOptions()
-    # Uncomment the next line to run Chrome headlessly
-    # options.add_argument("--headless")
     service = ChromeService(executable_path=driver_setup_chrome)
     driver = webdriver.Chrome(service=service, options=options)
 
